@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # web:
+  #   build: .
+  #   ports:
+  #     - "5000:5000"
+  #   environment:
+  #     - FLASK_APP=app.main
+  #     - FLASK_ENV=development
+  #   depends_on:
+  #     - redis
+  #     - questdb
+  #   volumes:
+  #     - ./app:/app
+
+  celery:
+    container_name: data_ingestion-celery
+    build:
+      dockerfile: data_ingestion/Dockerfile
+    environment:
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+    command: celery -A data_ingestion.celery_app worker --loglevel=info --beat
+    depends_on:
+      - redis
+      - questdb
+    volumes:
+      - ./app:/app
+
+  flower:
+    container_name: celery-flower
+    mem_limit: .1GB
+    build: 
+      dockerfile: data_ingestion/Dockerfile
+    command: celery -A data_ingestion.celery_app flower --port=5555
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - celery
+
+  redis:
+    container_name: redis
+    mem_limit: .1GB
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+  questdb:
+    image: questdb/questdb:latest
+    container_name: questdb
+    environment:
+      - QDB_PG_USER=${QDB_PG_USER}
+      - QDB_PG_PASSWORD=${QDB_PG_PASSWORD}
+      - QDB_CREDENTIALS_USER=${QDB_CREDENTIALS_USER}
+      - QDB_CREDENTIALS_PASSWORD=${QDB_CREDENTIALS_PASSWORD}
+    ports:
+      - "9000:9000"  # Web Console
+      - "8812:8812"  # PostgreSQL wire protocol
+      - "9009:9009"  # REST API
+    volumes:
+      - questdb_data:/root/.questdb/db
+
+  initdb:
+    mem_limit: .05GB
+    build:
+      dockerfile: scripts/Dockerfile
+    depends_on:
+      - questdb
+    entrypoint: ["sh", "-c", "sleep 30 && psql -h questdb -p 8812 -U ${QDB_PG_USER} -d postgres -f /docker-entrypoint-initdb.d/init.sql"]
+    environment:
+      - PGPASSWORD=${QDB_PG_PASSWORD}
+
+volumes:
+  questdb_data:
