@@ -1,27 +1,202 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GBFS Visualization</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <div class="container">
-        <h1>GBFS Visualization</h1>
-        <div class="controls">
-            <label for="metric-select">Select Metric:</label>
-            <select id="metric-select">
-                <option value="current_range_km">Current Range (km)</option>
-                <option value="is_disabled_count">Disabled Count</option>
-                <option value="is_reserved_count">Reserved Count</option>
-            </select>
-        </div>
-        <div class="chart-container">
-            <canvas id="dataChart"></canvas>
-        </div>
-    </div>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-</body>
-</html>
+
+
+<style>
+    .charts {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        width: 800px;
+        margin: 50px auto;
+    }
+    h1 {
+        text-align: center;
+        margin-top: 50px;
+        font-family:Arial, Helvetica, sans-serif
+    }
+
+</style>
+
+<div class="Dashboard">
+    <h1>Dashboard</h1>
+</div>
+<div class="charts">
+    <canvas id="range"></canvas>
+    <canvas id="disabledCount"></canvas>
+    <canvas id="reservedCount"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    function formatDate (dateString) {
+        // Create a Date object
+        const date = new Date(dateString);
+
+        // Extract the components
+        const year = date.getUTCFullYear();
+        const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const day = String(date.getUTCDate()).padStart(2, '0');
+        const hours = String(date.getUTCHours()).padStart(2, '0');
+        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+
+        // Format the date to YYYY-MM-DD-HH-MM
+        const formattedDate = `${year}-${month}-${day}-${hours}-${minutes}`;
+        return formattedDate
+
+    }
+    const rangeCtx = document.getElementById('range');
+    const disabledCountCtx = document.getElementById('disabledCount');
+    const reservedCountCtx = document.getElementById('reservedCount');
+
+    const almere = {{ almere | safe }}
+    const delft = {{ delft | safe }}
+    const breda = {{ breda | safe }}
+
+    almereRanges = []
+    almereDates = []
+    almereIsDisabledCount = []
+    almereIsReservedCount = []
+
+    delftRanges = []
+    delftIsDisabledCount = []
+    delftIsReservedCount = []
+
+    bredaRanges = []
+    bredaIsDisabledCount = []
+    bredaIsReservedCount = []
+
+    breda.forEach(entry => {
+        bredaRanges.push(entry.current_range_meters / 10000)
+        bredaIsDisabledCount.push(entry.is_disabled_count)
+        bredaIsReservedCount.push(entry.is_reserved_count)
+    })
+
+    delft.forEach(entry => {
+        delftRanges.push(entry.current_range_meters / 10000)
+        delftIsDisabledCount.push(entry.is_disabled_count)
+        delftIsReservedCount.push(entry.is_reserved_count)
+    })
+
+    almere.forEach(entry => {
+        almereRanges.push(entry.current_range_meters / 10000)
+        almereDates.push(formatDate(entry.timestamp))
+        almereIsReservedCount.push(entry.is_reserved_count)
+    });
+
+    new Chart(rangeCtx, {
+        type: 'line',
+        title: 'test',
+        data: {
+            labels: almereDates,
+            datasets: [{
+                label: 'Almere',
+                data: almereRanges,
+                borderWidth: 1
+            },
+            {
+                label: 'Delft',
+                data: delftRanges,
+                borderWidth: 1
+            },
+            {
+                label: 'Breda',
+                data: bredaRanges,
+                borderWidth: 1
+            }
+        ]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,         
+                    text: 'Combined Current Range (km)',
+                    font: {
+                        size: 18          
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    new Chart(disabledCountCtx, {
+        type: 'line',
+        data: {
+            labels: almereDates,
+            datasets: [{
+                label: 'Almere',
+                data: almereIsDisabledCount,
+                borderWidth: 1
+            },
+            {
+                label: 'Delft',
+                data: delftIsDisabledCount,
+                borderWidth: 1
+            },
+            {
+                label: 'Breda',
+                data: bredaIsDisabledCount,
+                borderWidth: 1
+            }
+        ]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,         
+                    text: 'Available mopeds',
+                    font: {
+                        size: 18          
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    new Chart(reservedCountCtx, {
+        type: 'line',
+        data: {
+            labels: almereDates,
+            datasets: [{
+                label: 'Almere',
+                data: almereIsReservedCount,
+                borderWidth: 1
+            },
+            {
+                label: 'Delft',
+                data: delftIsReservedCount,
+                borderWidth: 1
+            },
+            {
+                label: 'Breda',
+                data: bredaIsReservedCount,
+                borderWidth: 1
+            }
+        ]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,         
+                    text: 'Reserved Mopeds',
+                    font: {
+                        size: 18          
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
