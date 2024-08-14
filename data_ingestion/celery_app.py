@@ -18,6 +18,15 @@ app = Celery('tasks', broker='redis://redis:6379/0')
 
 @app.task
 def fetch_and_store_data(provider: dict):
+    """
+    Fetches data from a provider and stores it in S3.
+    
+    Parameters:
+        provider (dict): A dictionary containing the provider's name and URL.
+        
+    Returns:
+        None
+    """
     response = requests.request(
             method="GET", 
             url=provider.get('url'), 

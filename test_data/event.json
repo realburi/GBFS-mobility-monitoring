@@ -1,0 +1,38 @@
+{
+    "Records": [
+        {
+            "eventVersion": "2.1",
+            "eventSource": "aws:s3",
+            "awsRegion": "eu-west-2",
+            "eventTime": "2024-08-13T20:50:36.590Z",
+            "eventName": "ObjectCreated:Put",
+            "userIdentity": {
+                "principalId": "AWS:AIDAUW4RA7NU5YH6KDLPT"
+            },
+            "requestParameters": {
+                "sourceIPAddress": "31.187.198.87"
+            },
+            "responseElements": {
+                "x-amz-request-id": "5DXX7GENWP4SSRN7",
+                "x-amz-id-2": "ShZbFiwdiU7Ba8sJ03rxG61mjze6cgGRWFkpBryFx9N2BcBGo3xvOVG6NAklM9OcDBZ72f2j/4n9z1PmCLgWvLqv365JWnby1v714Tzg8b4="
+            },
+            "s3": {
+                "s3SchemaVersion": "1.0",
+                "configurationId": "cb9eac4d-ff6d-4725-b932-151500bb86af",
+                "bucket": {
+                    "name": "gbfs-raw-data",
+                    "ownerIdentity": {
+                        "principalId": "A2TR2QBZI0NSU5"
+                    },
+                    "arn": "arn:aws:s3:::gbfs-raw-data"
+                },
+                "object": {
+                    "key": "check_almere_2024-08-13T20%3A50%3A34.324380.json",
+                    "size": 884286,
+                    "eTag": "f813ee30e7514850eb28b43a7dfab538",
+                    "sequencer": "0066BBC71C6545BE2A"
+                }
+            }
+        }
+    ]
+}
