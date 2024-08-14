@@ -12,6 +12,7 @@ click-plugins==1.1.1
 click-repl==0.3.0
 Flask==3.0.3
 flower==2.0.1
+greenlet==3.0.3
 humanize==4.10.0
 idna==3.7
 itsdangerous==2.2.0
@@ -21,6 +22,7 @@ kombu==5.4.0
 MarkupSafe==2.1.5
 prometheus_client==0.20.0
 prompt_toolkit==3.0.47
+psycopg2-binary==2.9.9
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 pytz==2024.1
@@ -30,6 +32,7 @@ requests==2.32.3
 s3transfer==0.10.2
 six==1.16.0
 tornado==6.4.1
+typing_extensions==4.12.2
 tzdata==2024.1
 urllib3==2.2.2
 vine==5.1.0
