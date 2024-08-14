@@ -5,6 +5,7 @@ import json
 import boto3
 from datetime import datetime
 import os
+import time 
 
 # Configure AWS credentials and S3 bucket name
 AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY')
@@ -80,3 +81,4 @@ def setup_periodic_tasks(sender: Celery, **kwargs):
             fetch_and_store_data.s(provider),
             name=f'Fetch {provider["url"]} every {T} seconds'
         )
+        time.sleep(1) # lambda provisioned concurrency was limited due to my payment plan 
