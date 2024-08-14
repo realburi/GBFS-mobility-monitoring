@@ -45,7 +45,7 @@ def save_to_database(processed_data, city):
         # Insert data into QuestDB
         insert_query = """
         INSERT INTO my_table (current_range_meters, is_disabled_count, is_reserved_count, city, timestamp) 
-        VALUES (%s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s);
         """
         cursor.execute(
             insert_query, 
