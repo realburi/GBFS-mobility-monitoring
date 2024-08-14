@@ -12,7 +12,7 @@ def index():
 
 @app.route('/api/data')
 def get_data():
-    sql_query = "select current_range_meters, is_disabled_count, is_reserved_count, city, timestamp from my_table; order by city, timestamp"
+    sql_query = "select * from my_table; order by  timestamp"
     response = requests.get(
         f'{questDB_host}/exec',
         params={'query': sql_query}
