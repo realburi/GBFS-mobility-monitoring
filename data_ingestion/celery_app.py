@@ -72,7 +72,7 @@ def setup_periodic_tasks(sender: Celery, **kwargs):
     is executed every T seconds and fetches and stores the data for the
     provider.
     """
-    T = 30.0
+    T = 5 * 60.0  # 5 minutes
     for provider in PROVIDERS:
         # Add a periodic task for the provider
         sender.add_periodic_task(
