@@ -13,6 +13,7 @@ services:
       - questdb
     volumes:
       - ./app:/app
+    mem_limit: 0.1GB
 
   celery:
     container_name: data_ingestion-celery
