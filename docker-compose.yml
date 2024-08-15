@@ -1,6 +1,7 @@
 services:
   web:
     env_file: .env
+    restart: always
     container_name: application
     build: 
       dockerfile: app/Dockerfile
@@ -17,6 +18,7 @@ services:
 
   celery:
     container_name: data_ingestion-celery
+    restart: always
     build:
       dockerfile: data_ingestion/Dockerfile
     environment:
@@ -32,6 +34,7 @@ services:
 
   flower:
     container_name: celery-flower
+    restart: always
     mem_limit: .1GB
     build: 
       dockerfile: data_ingestion/Dockerfile
@@ -44,6 +47,7 @@ services:
 
   redis:
     container_name: redis
+    restart: always
     mem_limit: .1GB
     image: "redis:alpine"
     ports:
@@ -51,6 +55,7 @@ services:
 
   questdb:
     image: questdb/questdb:latest
+    restart: always
     container_name: questdb
     environment:
       - QDB_PG_USER=${QDB_PG_USER}
@@ -66,6 +71,7 @@ services:
 
   initdb:
     mem_limit: .05GB
+    restart: always
     build:
       dockerfile: scripts/Dockerfile
     depends_on:
