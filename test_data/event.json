@@ -10,7 +10,7 @@
                 "principalId": "AWS:AIDAUW4RA7NU5YH6KDLPT"
             },
             "requestParameters": {
-                "sourceIPAddress": "31.187.198.87"
+                "sourceIPAddress": "x-x"
             },
             "responseElements": {
                 "x-amz-request-id": "5DXX7GENWP4SSRN7",
